@@ -1,5 +1,5 @@
 #Kevin making a comment for the git class exercise
-
+#one more edit, on a new branch called 'classexercise'
 
 MAIRIN BALISI 
 January 13, 2015 
