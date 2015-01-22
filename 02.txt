@@ -1,0 +1,113 @@
+MAIRIN BALISI 
+January 13, 2015 
+EEB c234 
+
+
+
+# scb exercise 2.13.2 
+# FASTA 
+
+
+cd ~/introscicomp2014/UNIX/Data/fasta 
+
+# count how many lines are in each file
+wc -l *.fasta
+
+# skip the first line in order to have just the sequence 
+# print everything starting from the second line
+tail -n+2 407228326.fasta
+
+# count the sequence length: 
+# remove character "newline" that divides the lines: tr -d 
+# then count the number of characters in the file (skipping the first line): wc -c
+tail -n+2 407228326.fasta | tr -d "\n" | wc -c
+tail -n+2 407228412.fasta | tr -d "\n" | wc -c
+tail -n+2 E.coli.fasta | tr -d "\n" | wc -c
+
+# count the matches of sequence “ATGC” in E. coli's genome:
+# remove the first line and removing newline characters: tr -d
+# use grep to print out all occurrences of the sequence: grep -o "ATGC" 
+# finally, count the number of occurrences: wc -l
+tail -n+2 E.coli.fasta | tr -d "\n" | grep -o "ATGC" | wc -l
+
+# now find AT and GC counts 
+tail -n+2 E.coli.fasta | tr -d "\n" | grep -o [A,T] | wc -l  # 2306454
+tail -n+2 E.coli.fasta | tr -d "\n" | grep -o [G,C] | wc -l  # 2379681
+
+
+
+# scb exercise 2.13.3 
+# Darwin 
+
+
+cd ~/introscicomp2014/UNIX/Data
+
+# Remove the first 264 lines and the lines from 13900 onward 
+## these lines contain Project Gutenberg data and the subject index
+## can accomplish this by redirecting the output provided by the commands head and tail 
+## read the documentations on these commands (man head) 
+# Save the results in the file darwin.txt 
+
+# count the original number of lines in otoos10.txt 
+wc -l otoos10.txt  
+# 15054 lines 
+
+# first try the commands individually 
+tail -n+265 otoos10.txt | wc -l  # should yield 14790 lines 
+head --lines=-1155 otoos10.txt | wc -l  # should yield 13899 lines 
+
+# first count the number of resulting lines before printing to darwin.txt 
+# there should be 13899 - 264 = 13635 lines 
+tail -n+265 otoos10.txt | head --lines=-1155 | wc -l 
+
+# success! now print to darwin.txt 
+tail -n+265 otoos10.txt | head --lines=-1155 > darwin.txt
+
+# peek at the resulting file 
+less darwin.txt
+
+
+# Count the occurrences in darwin.txt of the terms "evolution" or "evolved", 
+# appearing as full words and ignoring case.
+
+# try grep to print out all occurrences of "evolution" or "evolved" 
+grep -o -w -i 'evolution\|evolved' darwin.txt 
+
+# now count the occurrences - 
+grep -o -w -i 'evolution\|evolved' darwin.txt | wc -l  # 1 
+
+
+# Count the occurrences of "natural selection" and "Wallace" 
+grep -o -w -i 'natural selection' darwin.txt | wc -l  # 242 
+grep -o -w -i Wallace darwin.txt | wc -l  # 4 
+
+
+
+# scb exercise 2.13.3 
+# Temperatures 
+
+
+cd ~/introscicomp2014/UNIX/Data/Temperatures
+
+# Write a one-line command that extracts the maximum 
+# temperatures of each station for Jan 1st from all the files
+grep 180[0-3]0101,TMAX 180[0-3].csv | cut -d',' -f4
+
+
+# Write a one-line command that finds the warmest temperature for a given day of 1800
+
+# grep (extract max temperatures for each station on the day of interest), 
+grep TMAX 1800.csv
+# cut (extract the right column from the result of grep), 
+cut -d',' -f4 1800.csv
+# sort (to sort the results in ascending order), and 
+sort -n 
+# tail (to return only the maximum temperature)
+tail -1 1800.csv
+
+# now concatenate all 
+grep TMAX 1800.csv | cut -d',' -f4 | sort -n | tail -1 
+
+# The command should return 79 for February 5th and 225 for May 5th
+grep 18000205,TMAX 1800.csv | cut -d',' -f4 | sort -n | tail -1  # 79 
+grep 18000505,TMAX 1800.csv | cut -d',' -f4 | sort -n | tail -1  # 225 
